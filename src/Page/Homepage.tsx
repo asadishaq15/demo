@@ -1,153 +1,226 @@
-import product from "../assets/product.webp"
-import bg from "../assets/bg.webp"
-import ad from "../assets/add.png"
-import logo from "../assets/header-logo.webp"
-import logo2 from "../assets/footer-logo.webp"
+import React, { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const ImageViewerPage = () => {
+const ImageViewerPage: React.FC = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const videoSectionRef = useRef<HTMLElement>(null);
+  const textContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    if (videoSectionRef.current && textContainerRef.current) {
+      // Create a timeline for the text animation
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: videoSectionRef.current,
+          start: "top top", 
+          end: "bottom top", // This ensures the pin ends when section bottom reaches viewport top
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          scrub: 1,
+          onLeave: () => {
+            console.log("Section left viewport - continuing to next section");
+          }
+        }
+      });
+      
+      // Add the text animation to the timeline
+      tl.to(textContainerRef.current, {
+        y: "-100%", 
+        ease: "none"
+      });
+      
+      // Clean up on component unmount
+      return () => {
+        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      };
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col" style={{
-      backgroundImage: `url(${bg})`,
-      backgroundSize: 'auto',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'repeat',
-      backgroundAttachment: 'fixed'
-    }}>
+    <div className="min-h-screen flex flex-col">
       {/* Navbar */}
-      <nav style={{
-        background: 'linear-gradient(#4b4b4b, #1c1c1c 80%, #2a2a2a)'
-      }}>
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-between h-12">
-            {/* LEFT: Language selector, Logo, Sign Up */}
-            <div className="flex items-center space-x-3">
-              <div className="flex-shrink-0 flex items-center">
-                <img className="h-6 w-auto" src={logo} alt="Logo" />
-              </div>
-              {/* Language dropdown */}
-              <div className="relative inline-block text-left">
-                <button type="button" className="inline-flex justify-center items-center px-2 py-1 text-sm font-medium text-white hover:text-gray-300">
-                  English
-                  <svg className="-mr-1 ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                {/* Dropdown menu - hidden by default */}
-                <div className="hidden origin-top-right absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                  <div className="py-1">
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">English</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Español</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Français</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Deutsch</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Русский</a>
-                  </div>
-                </div>
-              </div>
-              {/* Sign Up button */}
-              <button className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm">
-                Sign Up
-              </button>
-            </div>
-            {/* RIGHT: Social and CTA */}
-            <div className="flex items-center space-x-3">
-              {/* Social media icons */}
-              <a href="#" className="text-white hover:text-blue-400">
-                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z" />
-                </svg>
-              </a>
-              <a href="#" className="text-white hover:text-blue-400">
-                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.1 10.1 0 01-3.127 1.195 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                </svg>
-              </a>
-              {/* Download Lightshot CTA button */}
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
-                Download Lightshot for free
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="flex-grow flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl w-full bg-white rounded-lg shadow-xl overflow-hidden">
-          {/* Main Image Container with slim white border */}
-          <div className="p-1 border border-gray-200">
-            <div className="relative bg-gray-50">
-              <img 
-                className="w-full h-auto max-h-[60vh] object-contain mx-auto" 
-                src={product}
-                alt="Main content" 
-              />
-            </div>
-          </div>
-        </div>
-        
-        {/* Stacked buttons below product container */}
-        <div className="max-w-3xl w-full mt-3 flex flex-col">
-          {/* First row - Captured with Lightshot */}
-          <div className="flex justify-center items-center py-2">
-            <span className="font-medium text-sm">Captured with Lightshot</span>
-          </div>
-          
-          {/* Second row - find similar and report abuse */}
-          <div className="flex justify-center items-center space-x-4 py-2">
-            <a href="#" className="text-blue-600 hover:underline flex items-center text-sm bg-transparent">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+      <header className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md' : 'bg-white/80 backdrop-blur-sm'}`}>
+        <nav className="max-w-[980px] mx-auto px-4 h-12 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center">
+            <a href="#" className="text-black">
+              <svg height="44" width="44" viewBox="0 0 17 48" className="h-5 w-5 fill-current">
+                <path d="M8.8 27.1c-2.1 0-3.8 1.6-3.8 1.6s1.7 1.6 3.8 1.6 3.8-1.6 3.8-1.6-1.7-1.6-3.8-1.6zm0 5.5c-3.9 0-7-3.1-7-7s3.1-7 7-7 7 3.1 7 7-3.1 7-7 7zm8.9-19.2H5.1c-.2 0-.4.2-.4.4v.4c0 .2.2.4.4.4h12.6c.2 0 .4-.2.4-.4v-.4c0-.2-.2-.4-.4-.4zM5.1 14.8h12.6c.2 0 .4-.2.4-.4v-.4c0-.2-.2-.4-.4-.4H5.1c-.2 0-.4.2-.4.4v.4c0 .2.2.4.4.4zM5.1 11.3h12.6c.2 0 .4-.2.4-.4v-.4c0-.2-.2-.4-.4-.4H5.1c-.2 0-.4.2-.4.4v.4c0 .2.2.4.4.4z" />
               </svg>
-              find similar
-            </a>
-            <a href="#" className="text-blue-600 hover:underline flex items-center text-sm bg-transparent">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              report abuse
             </a>
           </div>
-          
-          {/* Third row - like icon */}
-          <div className="flex justify-center items-center py-2">
-            <button className="text-gray-600 hover:text-red-500 flex items-center bg-transparent">
+          {/* Center Nav */}
+          <div className="hidden md:flex space-x-9 text-xs font-medium text-black">
+            {['Store','Mac','iPad','iPhone','Watch','AirPods','TV & Home','Entertainment','Accessories','Support'].map(item => (
+              <a key={item} href="#" className="hover:text-gray-600">{item}</a>
+            ))}
+          </div>
+          {/* Icons */}
+          <div className="flex items-center space-x-5">
+            <a href="#" className="text-black">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </a>
+            <a href="#" className="text-black">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </a>
+            <button className="md:hidden text-black">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           </div>
-        </div>
-          
-        {/* Ad container */}
-        <div className="max-w-3xl w-full flex justify-end p-4">
-          <div className="w-52 h-52 overflow-hidden rounded">
-            <img 
-              className="w-full h-full object-contain" 
-              src={ad}
-              alt="Advertisement" 
-            />
+        </nav>
+        <nav className="max-w-[980px] mx-auto px-4 h-10 flex items-center justify-center bg-transparent">
+          <div className="flex space-x-9 text-xs font-medium text-black">
+            {['Overview','Tech Specs','Compare','Buy'].map(item => (
+              <a key={item} href="#" className="hover:text-gray-600">{item}</a>
+            ))}
           </div>
-        </div>
-      </main>
+        </nav>
+      </header>
 
-      {/* Footer */}
-      <footer className="bg-transparent text-white py-3 mt-auto">
-        <div className="max-w-4xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          {/* Left: Logo and nav buttons */}
-          <div className="flex items-center w-full md:w-auto md:flex-1">
-            <img className="h-6 w-auto" src={logo2} alt="Footer Logo" />
-            <div className="flex space-x-2 ml-5">
-              <a href="#" className="text-blue-500 hover:text-white text-xs px-2 py-1 rounded transition-colors">Download</a>
-              <a href="#" className="text-blue-500 hover:text-white text-xs px-2 py-1 rounded transition-colors">Tutorials</a>
-              <a href="#" className="text-blue-500 hover:text-white text-xs px-2 py-1 rounded transition-colors">Privacy</a>
-              <a href="#" className="text-blue-500 hover:text-white text-xs px-2 py-1 rounded transition-colors">Help</a>
-              <a href="#" className="text-blue-500 hover:text-white text-xs px-2 py-1 rounded transition-colors">Advertise</a>
+      {/* Hero */}
+      <section className="w-full bg-black pt-[88px]">
+        <div className="relative w-full h-[300px] md:h-[700px] bg-white flex items-center justify-center">
+        <video
+          className="w-full h-full object-contain object-center"
+          autoPlay
+          muted
+          loop
+          src="https://www.apple.com/105/media/us/apple-vision-pro/2024/6e1432b2-fe09-4113-a1af-f20987bcfeee/anim/hero-us/medium_2x.mp4"
+        />
+          <div className="absolute bottom-10 left-0 right-0 text-center">
+            <h2 className="text-orange-500 text-4xl font-semibold mb-2">iPhone 14 Pro</h2>
+            <p className="text-white text-xl">Pro. Beyond.</p>
+            <div className="mt-4 flex justify-center space-x-5">
+              <a href="#" className="text-blue-500 hover:underline">Learn more &gt;</a>
+              <a href="#" className="text-blue-500 hover:underline">Buy &gt;</a>
             </div>
           </div>
-          {/* Right: copyright */}
-          <div className="w-full md:w-auto flex justify-center md:justify-end mt-2 md:mt-0">
-            <div className="text-gray-400 text-xs text-right">
-              <span className="text-blue-500" > Skillbrains </span >  <span className="text-black" >© 2009-2022</span>
+        </div>
+      </section>
+
+      {/* Video Section - This will get pinned */}
+      <section
+        ref={videoSectionRef}
+        className="w-full h-screen overflow-hidden relative"
+      >
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          src="https://www.apple.com/105/media/us/apple-vision-pro/2024/6e1432b2-fe09-4113-a1af-f20987bcfeee/anim/foundation/medium.mp4"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-30" />
+        <div
+          ref={textContainerRef}
+          className="absolute inset-0 flex flex-col items-center justify-end pb-16 px-4 text-center"
+        >
+          <h3 className="text-3xl md:text-5xl font-semibold text-white mb-2">
+            Immerse Yourself
+          </h3>
+          <p className="text-lg md:text-4xl text-white max-w-3xl mt-4">
+          Apple Vision Pro seamlessly blends digital content with your physical space.
+          </p>
+          <p className="text-lg md:text-4xl text-white max-w-3xl mt-4">
+          So you can work, watch, relive memories, and connect in ways never before possible.
+          </p>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="w-full bg-white py-16">
+        <div className="max-w-[980px] mx-auto px-4">
+          <h2 className="text-3xl font-semibold text-center mb-8">Why iPhone 14 Pro</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-xl font-medium mb-2">A16 Bionic Chip</h3>
+              <p className="text-gray-700">Experience lightning-fast performance with the most powerful smartphone chip ever.</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-medium mb-2">Pro Camera System</h3>
+              <p className="text-gray-700">Capture stunning photos and videos with advanced low-light capabilities and 48MP sensor.</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-medium mb-2">Always-On Display</h3>
+              <p className="text-gray-700">See key information at a glance without waking your phone.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#f5f5f7] text-[#86868b] py-8 mt-auto">
+        <div className="max-w-[980px] mx-auto px-4">
+          <div className="border-b border-[#d2d2d7] pb-4 mb-5">
+            <p className="text-xs">Copyright © 2025 Apple Inc. All rights reserved.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 text-xs">
+            <div>
+              <h3 className="font-semibold mb-3 text-[#1d1d1f]">Shop and Learn</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:underline">Store</a></li>
+                <li><a href="#" className="hover:underline">Mac</a></li>
+                <li><a href="#" className="hover:underline">iPad</a></li>
+                <li><a href="#" className="hover:underline">iPhone</a></li>
+                <li><a href="#" className="hover:underline">Watch</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-3 text-[#1d1d1f]">Services</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:underline">Apple Music</a></li>
+                <li><a href="#" className="hover:underline">Apple TV+</a></li>
+                <li><a href="#" className="hover:underline">Apple Fitness+</a></li>
+                <li><a href="#" className="hover:underline">iCloud</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-3 text-[#1d1d1f]">Account</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:underline">Manage Your Apple ID</a></li>
+                <li><a href="#" className="hover:underline">Apple Store Account</a></li>
+                <li><a href="#" className="hover:underline">iCloud.com</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-3 text-[#1d1d1f]">Apple Store</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:underline">Find a Store</a></li>
+                <li><a href="#" className="hover:underline">Genius Bar</a></li>
+                <li><a href="#" className="hover:underline">Today at Apple</a></li>
+                <li><a href="#" className="hover:underline">Apple Camp</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-3 text-[#1d1d1f]">For Business</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:underline">Apple and Business</a></li>
+                <li><a href="#" className="hover:underline">Shop for Business</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-8 border-t border-[#d2d2d7] pt-4 flex flex-col md:flex-row justify-between text-xs">
+            <p>More ways to shop: <a href="#" className="text-blue-600 hover:underline">Find an Apple Store</a> or <a href="#" className="text-blue-600 hover:underline">other retailer</a> near you. Or call 1-800-MY-APPLE.</p>
+            <div className="flex space-x-6 mt-4 md:mt-0">
+              {['Privacy Policy','Terms of Use','Sales and Refunds','Legal','Site Map'].map(link => (
+                <a key={link} href="#" className="hover:underline">{link}</a>
+              ))}
             </div>
           </div>
         </div>
