@@ -1,0 +1,314 @@
+// Test page styles
+.testPage {
+    width: 100%;
+    min-height: 100vh;
+    padding: 2rem;
+    background: #050f23;
+    color: white;
+    
+    .pageTitle {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .description {
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+      
+      p {
+        margin-bottom: 1rem;
+      }
+      
+      ol {
+        padding-left: 1.5rem;
+      }
+    }
+    
+    .testGrid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      
+      @media (min-width: 1024px) {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .performanceNotes {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      
+      h3 {
+        margin-bottom: 1rem;
+      }
+      
+      ul {
+        padding-left: 1.5rem;
+        line-height: 1.6;
+      }
+    }
+  }
+  
+  // Standalone Lottie test styles
+  .testContainer {
+    padding: 2rem;
+    border-radius: 8px;
+    background: rgba(0, 7, 22, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+    
+    h2, h3 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+  }
+  
+  .preloader {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+  
+  .loader {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+  
+  .loadingProgress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .progressBar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  
+  .progressBarFill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffe167 0%, #ffd700 100%);
+    border-radius: 100px;
+    transition: width 0.05s linear;
+    box-shadow: 0 0 15px rgba(255, 225, 103, 0.6);
+    position: relative;
+    will-change: width;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+      animation: shimmer 1.5s infinite;
+    }
+  }
+  
+  .progressText {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffe167;
+    text-shadow: 0 0 10px rgba(255, 225, 103, 0.3);
+    letter-spacing: 0.05em;
+  }
+  
+  .content {
+    text-align: center;
+    
+    p {
+      margin-bottom: 2rem;
+    }
+  }
+  
+  .restartButton {
+    background: #3F65FD;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+    
+    &:hover {
+      background: #2D4EDB;
+    }
+  }
+  
+  // Header test styles
+  .testHeaderContainer {
+    padding: 2rem;
+    border-radius: 8px;
+    background: rgba(0, 7, 22, 0.5);
+    min-height: 500px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    
+    h2 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .headerLogo {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+  
+  .headerLinks {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .headerLink {
+    color: white;
+    text-decoration: none;
+    position: relative;
+    padding: 0.5rem 0;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #3F65FD;
+      transition: width 0.3s;
+    }
+    
+    &:hover::after {
+      width: 100%;
+    }
+  }
+  
+  .headerPreloader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #050f23;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+  
+  .headerLoader {
+    width: 70%;
+    max-width: 500px;
+    height: auto;
+    
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+  
+  .headerLoadingProgress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 90%;
+    max-width: 400px;
+  }
+  
+  .headerProgressBar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  
+  .headerProgressBarFill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffe167 0%, #ffd700 100%);
+    border-radius: 100px;
+    transition: width 0.05s linear;
+    box-shadow: 0 0 15px rgba(255, 225, 103, 0.6);
+    position: relative;
+    will-change: width;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+      animation: shimmer 1.5s infinite;
+    }
+  }
+  
+  .headerProgressText {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffe167;
+    text-shadow: 0 0 10px rgba(255, 225, 103, 0.3);
+    letter-spacing: 0.05em;
+  }
+  
+  .headerControls {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
