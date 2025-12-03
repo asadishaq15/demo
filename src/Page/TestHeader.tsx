@@ -15,24 +15,19 @@ const TestHeader: React.FC = () => {
   const logoAnimationRef = useRef<AnimationItem | null>(null);
   const frameCounterRef = useRef(0);
 
-  // Setup loader animation with memoized callback to avoid recreating function
   const setupLoaderAnimation = useCallback(() => {
     if (!loaderRef.current) return;
     
-    // Clean up any existing animation
     if (loaderAnimationRef.current) {
       loaderAnimationRef.current.destroy();
       loaderAnimationRef.current = null;
     }
     
-    // Clear container
     loaderRef.current.innerHTML = "";
     
-    // Reset states
     setLoadingProgress(0);
     frameCounterRef.current = 0;
     
-    // Create new animation
     loaderAnimationRef.current = lottie.loadAnimation({
       container: loaderRef.current,
       renderer: "svg",
@@ -44,7 +39,6 @@ const TestHeader: React.FC = () => {
     const handleEnterFrame = () => {
       if (!loaderAnimationRef.current || !loaderAnimationRef.current.totalFrames) return;
       
-      // Throttle progress updates for better performance
       if (frameCounterRef.current++ % 3 !== 0) return;
       
       const currentFrame = loaderAnimationRef.current.currentFrame;
@@ -56,11 +50,9 @@ const TestHeader: React.FC = () => {
     const handleComplete = () => {
       setLoadingProgress(100);
       
-      // Add delay to ensure smooth transition
       setTimeout(() => {
         setPreloaderFinished(true);
         
-        // Initialize the logo animation after preloader finishes
         if (logoRef.current) {
           logoRef.current.innerHTML = "";
           
@@ -78,7 +70,6 @@ const TestHeader: React.FC = () => {
     loaderAnimationRef.current.addEventListener("enterFrame", handleEnterFrame);
     loaderAnimationRef.current.addEventListener("complete", handleComplete);
     
-    // Store handlers for cleanup
     return {
       handleEnterFrame,
       handleComplete
@@ -89,7 +80,6 @@ const TestHeader: React.FC = () => {
     const cleanup = setupLoaderAnimation();
     
     return () => {
-      // Clean up animations and event listeners
       if (cleanup && loaderAnimationRef.current) {
         loaderAnimationRef.current.removeEventListener("enterFrame", cleanup.handleEnterFrame);
         loaderAnimationRef.current.removeEventListener("complete", cleanup.handleComplete);
@@ -105,16 +95,13 @@ const TestHeader: React.FC = () => {
   }, [setupLoaderAnimation]);
 
   const handleRestart = () => {
-    // Reset state first
     setPreloaderFinished(false);
     
-    // Clean up logo animation
     if (logoAnimationRef.current) {
       logoAnimationRef.current.destroy();
       logoAnimationRef.current = null;
     }
     
-    // Setup loader animation with slight delay to ensure DOM is ready
     setTimeout(() => {
       setupLoaderAnimation();
     }, 50);

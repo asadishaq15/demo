@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import lottie from "lottie-web";
-import type { AnimationItem } from "lottie-web"; // Using type-only import
+import type { AnimationItem } from "lottie-web";
 import styles from "./styles.module.scss";
 import optimizedLottieData from './optimized-lottie.json';
 
@@ -14,15 +14,12 @@ const LottieTest: React.FC = () => {
   const setupAnimation = () => {
     if (!loaderRef.current) return;
     
-    // Clean up any previous animation
     if (animationRef.current) {
       animationRef.current.destroy();
     }
     
-    // Clear any existing content
     loaderRef.current.innerHTML = "";
     
-    // Load animation from optimized JSON
     animationRef.current = lottie.loadAnimation({
       container: loaderRef.current,
       renderer: "svg",
@@ -31,26 +28,21 @@ const LottieTest: React.FC = () => {
       animationData: optimizedLottieData,
     });
     
-    // Reset counter
     frameCounterRef.current = 0;
     
     const handleEnterFrame = () => {
       if (!animationRef.current || !animationRef.current.totalFrames) return;
       
-      // Throttle updates for performance
       if (frameCounterRef.current++ % 3 !== 0) return;
       
       const currentFrame = animationRef.current.currentFrame;
       const totalFrames = animationRef.current.totalFrames;
-      // Cap progress at 99.9 until complete to ensure the animation completes properly
       const progress = Math.min(Math.max((currentFrame / totalFrames) * 100, 0), 99.9);
       setLoadingProgress(Math.round(progress));
     };
     
     const handleComplete = () => {
-      // Always set to 100 when complete
       setLoadingProgress(100);
-      // Use setTimeout to ensure state changes don't clash
       setTimeout(() => {
         setPreloaderFinished(true);
       }, 300);
@@ -59,7 +51,6 @@ const LottieTest: React.FC = () => {
     animationRef.current.addEventListener("enterFrame", handleEnterFrame);
     animationRef.current.addEventListener("complete", handleComplete);
     
-    // Store event cleanup in refs to ensure we reference the same functions
     const cleanupRef = {
       handleEnterFrame,
       handleComplete
@@ -82,11 +73,9 @@ const LottieTest: React.FC = () => {
   }, []);
 
   const handleRestart = () => {
-    // Reset states first
     setPreloaderFinished(false);
     setLoadingProgress(0);
     
-    // Setup animation with a small delay to ensure DOM updates
     setTimeout(() => {
       setupAnimation();
     }, 50);
